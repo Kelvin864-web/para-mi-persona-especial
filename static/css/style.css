@@ -1,0 +1,258 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #1a1a1a; /* Fondo oscuro */
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    perspective: 1500px; /* Para efectos 3D al abrir */
+}
+
+.compass-wrapper {
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.compass-body {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+/* **ELEMENTO: LA CORREA SUPERIOR (Anillo de sujeción)** */
+.compass-top-loop {
+    width: 60px; /* Ancho de la correa */
+    height: 30px; /* Altura del semicírculo */
+    border: 5px solid #7a7a7a; /* Color y grosor del metal */
+    border-radius: 30px 30px 0 0; /* Solo la parte superior redondeada */
+    border-bottom: none; /* Sin borde inferior */
+    position: absolute;
+    top: -25px; /* Súbelo por encima de la brújula principal */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4; /* Asegura que esté por encima de todo */
+    box-sizing: border-box;
+    /* Sombras para dar volumen */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.1);
+}
+/* Detalle interno para la correa */
+.compass-top-loop::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #5a5a5a;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+
+/* Base de la brújula (el círculo que siempre permanece visible y ESTÁTICO) */
+.compass-main-body {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%; /* Siempre circular */
+    background-color: #4a4a4a; /* Gris metálico más profundo */
+    position: absolute;
+    top: 0; /* Permanece en la parte superior del contenedor compass-body */
+    left: 0;
+    box-sizing: border-box;
+    /* Sombras más sutiles y metálicas */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6), 0 1px 5px rgba(0, 0, 0, 0.5);
+    border: 2px solid #777; /* Borde más claro */
+    z-index: 1; /* Estará debajo de la tapa cuando esté cerrada */
+}
+
+/* Tapa superior de la brújula (el círculo que se levanta/baja) */
+.compass-top-lid {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%; /* Siempre circular */
+    background-color: #5e5e5e; /* Gris metálico más claro para la tapa */
+    position: absolute;
+    top: 0; /* Permanece en la parte superior del contenedor compass-body */
+    left: 0;
+    box-sizing: border-box;
+    /* Sombras para la tapa */
+    box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+    border: 2px solid #777;
+    z-index: 2; /* Siempre encima del cuerpo principal cuando está cerrada */
+    transform-style: preserve-3d;
+    transform-origin: 50% 0%; /* La bisagra está en la parte SUPERIOR de la tapa */
+    transition: transform 0.8s ease-in-out;
+}
+
+/* **AJUSTES DE LA BISAGRA** */
+.compass-hinge {
+    width: 70px; /* Más ancha para parecerse más a la imagen */
+    height: 15px; /* Más baja */
+    background-color: #666; /* Gris más oscuro para la bisagra */
+    position: absolute;
+    top: -5px; /* Posicionada justo encima del cuerpo principal, debajo de la correa */
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 5px; /* Ligeramente más redondeada */
+    z-index: 3; /* Entre la correa y la tapa/cuerpo cuando está cerrada */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7), 0 1px 1px rgba(0, 0, 0, 0.3);
+    border: 1px solid #555;
+    transform-origin: 50% 0%; /* La bisagra rota desde arriba */
+    transition: transform 0.8s ease-in-out;
+}
+
+/* **MOVIMIENTO DE LA BISAGRA AL ABRIRSE** */
+.compass-body.open .compass-hinge {
+    /* La bisagra sigue la rotación de la tapa */
+    transform: translateX(-50%) rotateX(180deg) translateY(0px) translateZ(0px); /* Coincide con la rotación de la tapa */
+    z-index: 1; /* Va detrás del cuerpo principal cuando está abierta */
+}
+
+
+/* Anillos exteriores - Más sutiles y metálicos */
+.lid-outer-ring, .body-outer-ring {
+    width: calc(100% + 4px); /* Ligeramente más grandes */
+    height: calc(100% + 4px);
+    border-radius: 50%;
+    border: 3px solid #6a6a6a; /* Gris más oscuro para los anillos */
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Pantallas y detalles internos */
+.compass-screen {
+    width: 85%; /* Ligeramente más grandes */
+    height: 85%;
+    background-color: #222; /* Fondo más oscuro para la pantalla */
+    border-radius: 50%; /* Pantallas también circulares */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #555; /* Borde más sutil */
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Ocultar la imagen de Peggy cuando la brújula está cerrada */
+.compass-body.closed .top-screen,
+.compass-body.closed .peggy-photo,
+.compass-body.closed .screen-reflection {
+    visibility: hidden; /* Oculta estos elementos completamente */
+    opacity: 0;
+    transition: visibility 0s 0.8s, opacity 0.8s ease-in-out; /* Retrasa la ocultación */
+}
+
+/* Mostrar la imagen de Peggy cuando la brújula se abre */
+.compass-body.open .top-screen,
+.compass-body.open .peggy-photo,
+.compass-body.open .screen-reflection {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s, opacity 0.8s ease-in-out; /* Muestra sin retraso */
+}
+
+.peggy-photo {
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+    border-radius: 50%;
+    filter: grayscale(100%) brightness(110%) contrast(105%); /* Ajustes sutiles para la foto */
+    transform: rotateX(180deg)
+}
+
+.screen-reflection {
+    position: absolute;
+    top: 15%; /* Ajustado para un reflejo más creíble */
+    left: 15%;
+    width: 70%;
+    height: 30%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    opacity: 0.8;
+    mix-blend-mode: screen;
+}
+
+/* **ESTADO ABIERTO DE LA BRÚJULA** */
+.compass-body.open .compass-top-lid {
+    transform: rotateX(180deg) translateY(0px) translateZ(0px); /* Usar el valor de translateY que te funciona para la separación */
+    z-index: 1; /* La tapa abierta va por debajo del cuerpo principal */
+}
+
+/* Detalles de la brújula funcional (el dial, aguja, etc.) */
+.compass-dial {
+    width: 80%; /* Ajustado para estar dentro de la pantalla */
+    height: 80%;
+    border-radius: 50%;
+    background-color: #1e1e1e; /* Fondo más oscuro */
+    position: relative;
+    border: 1px solid #666; /* Borde más sutil */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.north-marker, .east-marker, .south-marker, .west-marker {
+    position: absolute;
+    font-size: 1em; /* Letras ligeramente más pequeñas */
+    font-weight: bold;
+    color: #ddd; /* Color ligeramente más claro */
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+.north-marker { top: 18%; left: 50%; transform: translateX(-50%); color: #c0392b; } /* Rojo más intenso */
+.east-marker { top: 50%; right: 18%; transform: translateY(-50%); }
+.south-marker { bottom: 18%; left: 50%; transform: translateX(-50%); }
+.west-marker { top: 50%; left: 18%; transform: translateY(-50%); }
+
+.needle {
+    width: 2px; /* Aguja más delgada */
+    height: 65%; /* Ligeramente más corta */
+    background: linear-gradient(to top, #a93226 50%, #2980b9 50%); /* Tonos más oscuros */
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate(0deg); /* Posición inicial */
+    border-radius: 1px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    transition: transform 0.5s ease-out; /* Suavizar el movimiento de la aguja */
+}
+
+/* Esfera interior de la aguja */
+.compass-dial::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background-color: #555;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Efecto de luz ambiental (opcional) - Ligeramente más tenue */
+.compass-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateZ(-50px);
+    pointer-events: none;
+}
